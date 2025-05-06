@@ -1,0 +1,58 @@
+/* Estilos base */
+.survey-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.survey-section {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+
+.survey-section.active {
+    display: block;
+}
+
+/* Tablas dinámicas */
+.dynamic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.dynamic-table th, 
+.dynamic-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.btn-add {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Barra de progreso */
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: #eee;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #007bff;
+    transition: width 0.5s ease;
+}
+
+/* Diseño responsivo */
+@media (max-width: 768px) {
+    .dynamic-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

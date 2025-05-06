@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observatorio de Bienestar Universitario</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Barra de progreso -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="survey-container">
+        <h1>OBSERVATORIO DE BIENESTAR UNIVERSITARIO</h1>
+        
+        <!-- Sección 1 - Gestión de Bienestar -->
+        <section id="seccion1" class="survey-section active">
+            <h2>Gestión de Bienestar Universitario</h2>
+            
+            <!-- Subsección Presupuesto -->
+            <div class="subsection">
+                <h3>Presupuesto</h3>
+                
+                <!-- Pregunta 1 -->
+                <div class="question">
+                    <label>Institución de Educación Superior:</label>
+                    <select class="form-control" required>
+                        <option value="">Seleccione...</option>
+                        <option>Universidad Santo Tomás</option>
+                        <option>Universidad Militar Nueva Granada</option>
+                        <!-- Agregar más opciones -->
+                    </select>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="question">
+                    <label>Rango presupuestal anual (millones de pesos):</label>
+                    <select class="form-control" required>
+                        <option value="">Seleccione...</option>
+                        <option>Menor a 499</option>
+                        <option>Entre 500 y 699</option>
+                        <!-- Más opciones -->
+                    </select>
+                </div>
+
+                <!-- Pregunta 3 - Tabla dinámica -->
+                <div class="question">
+                    <label>Fuentes de recursos:</label>
+                    <table id="fuentes-table" class="dynamic-table">
+                        <thead>
+                            <tr>
+                                <th>Fuente</th>
+                                <th>Tipo entidad</th>
+                                <th>Porcentaje</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Filas dinámicas -->
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn-add" onclick="addFuenteRow()">
+                        <i class="fas fa-plus"></i> Agregar fuente
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button type="button" class="btn-nav" onclick="navigate('next')">Siguiente</button>
+            </div>
+        </section>
+
+        <!-- Sección 2 - Personal -->
+        <section id="seccion2" class="survey-section">
+            <h2>Personal por área de Bienestar</h2>
+            <div class="question">
+                <table id="personal-table" class="dynamic-table">
+                    <thead>
+                        <tr>
+                            <th>Documento</th>
+                            <th>Nivel Jerárquico</th>
+                            <th>Área Temática</th>
+                            <!-- Más columnas -->
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Filas dinámicas -->
+                    </tbody>
+                </table>
+                <button type="button" class="btn-add" onclick="addPersonalRow()">
+                    <i class="fas fa-plus"></i> Agregar persona
+                </button>
+            </div>
+            <div class="navigation-buttons">
+                <button type="button" class="btn-nav" onclick="navigate('prev')">Anterior</button>
+                <button type="button" class="btn-nav" onclick="navigate('next')">Siguiente</button>
+            </div>
+        </section>
+
+        <!-- Más secciones... -->
+
+        <!-- Sección final -->
+        <section id="final" class="survey-section">
+            <div class="export-options">
+                <button class="btn-export" onclick="exportToExcel()">
+                    <i class="fas fa-file-excel"></i> Exportar a Excel
+                </button>
+                <button class="btn-export" onclick="sendEmail()">
+                    <i class="fas fa-envelope"></i> Enviar por correo
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script src="script_20250505.js"></script>
+</body>
+</html>
