@@ -1,89 +1,204 @@
-let currentSection = 0;
-const sections = document.querySelectorAll('.survey-section');
+// --- Control de preguntas dentro de la sección Cultura ---
+let preguntaActualCultura = 0;
+const preguntasCultura = document.querySelectorAll('.pregunta-cultura');
+const totalPreguntasCultura = preguntasCultura.length;
 
-// Navegación entre secciones
-function navigate(direction) {
-    if (validateSection(currentSection)) {
-        sections[currentSection].classList.remove('active');
-        direction === 'next' ? currentSection++ : currentSection--;
-        updateProgress();
-        sections[currentSection].classList.add('active');
-    }
+function mostrarPreguntaCultura(n) {
+  preguntasCultura.forEach((div, idx) => {
+    div.classList.toggle('pregunta-activa', idx === n);
+  });
+  // Actualiza barra de progreso de preguntas
+  document.getElementById('progresoPreguntasCultura').innerHTML =
+    `Pregunta ${n + 1} de ${totalPreguntasCultura}`;
+  preguntaActualCultura = n;
 }
 
-// Validación de sección
-function validateSection(sectionIndex) {
-    const inputs = sections[sectionIndex].querySelectorAll('[required]');
-    let isValid = true;
-    
-    inputs.forEach(input => {
-        if (!input.value) {
-            input.classList.add('invalid');
-            isValid = false;
-        } else {
-            input.classList.remove('invalid');
-        }
-    });
-    
-    return isValid;
+function siguientePreguntaCultura() {
+  const pregunta = preguntasCultura[preguntaActualCultura];
+  // Validación simple: que el campo requerido esté lleno
+  const required = pregunta.querySelector('[required]');
+  if (required && !required.value) {
+    required.focus();
+    required.reportValidity();
+    return;
+  }
+  if (preguntaActualCultura < totalPreguntasCultura - 1) {
+    mostrarPreguntaCultura(preguntaActualCultura + 1);
+  }
 }
 
-// Añadir filas a tablas
-function addFuenteRow() {
-    const table = document.getElementById('fuentes-table').getElementsByTagName('tbody')[0];
-    const newRow = table.insertRow();
-    
-    newRow.innerHTML = `
-        <td>
-            <select class="form-control" required>
-                <option value="">Seleccione...</option>
-                <option>Interna</option>
-                <option>Externa</option>
-            </select>
-        </td>
-        <td>
-            <select class="form-control">
-                <option value="">N/A</option>
-                <option>Caja de Compensación</option>
-                <!-- Más opciones -->
-            </select>
-        </td>
-        <td>
-            <select class="form-control" required>
-                <option value="">Seleccione...</option>
-                <option>1%-25%</option>
-                <!-- Más opciones -->
-            </select>
-        </td>
-        <td>
-            <button class="btn-remove" onclick="deleteRow(this)">
-                <i class="fas fa-trash"></i>
-            </button>
-        </td>
-    `;
+function anteriorPreguntaCultura() {
+  if (preguntaActualCultura > 0) {
+    mostrarPreguntaCultura(preguntaActualCultura - 1);
+  }
 }
 
-// Exportar a Excel
-function exportToExcel() {
-    const data = [];
-    // Lógica para recolectar datos
-    const csvContent = "data:text/csv;charset=utf-8," + data.map(row => row.join(",")).join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "encuesta_bienestar.csv");
-    document.body.appendChild(link);
-    link.click();
+function finalizarSeccionCultura() {
+  document.getElementById('seccion-cultura').classList.add('oculto');
+  document.getElementById('mensajeFinal').classList.remove('oculto');
+  document.getElementById('mensajeFinal').textContent = '¡Gracias! Sección Cultura completada.';
 }
 
-// Actualizar progreso
-function updateProgress() {
-    const progress = (currentSection / (sections.length - 1)) * 100;
-    document.getElementById('progressBar').style.width = progress + "%";
+// --- Barra de progreso de secciones (ajusta según el total de secciones) ---
+function updateProgressSecciones(seccionActual, totalSecciones) {
+  document.getElementById('progresoSecciones').innerHTML =
+    `Sección ${seccionActual} de ${totalSecciones}`;
 }
 
-// Inicialización
-document.addEventListener('DOMContentLoaded', () => {
-    sections[0].classList.add('active');
-    updateProgress();
-});
+// --- Tablas dinámicas ---
+function agregarFilaActividadesCultura() {
+  const tbody = document.getElementById('tablaActividadesCultura');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" required></td>
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Estudiantes</option>
+        <option>Profesores</option>
+        <option>Administrativos</option>
+      </select>
+    </td>
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Femenino</option>
+        <option>Masculino</option>
+        <option>No binario</option>
+      </select>
+    </td>
+    <td><input type="number" min="0" required></td>
+    <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+agregarFilaActividadesCultura();
+
+function agregarFilaAsociacionCultural() {
+  const tbody = document.getElementById('tablaAsociacionesCulturales');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Ascun</option>
+        <option>Otros</option>
+      </select>
+    </td>
+    <td><input type="number" min="0" required></td>
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Estudiantes</option>
+        <option>Profesores</option>
+        <option>Administrativos</option>
+      </select>
+    </td>
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Femenino</option>
+        <option>Masculino</option>
+        <option>No binario</option>
+      </select>
+    </td>
+    <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function agregarFilaGrupoRepresentativo() {
+  const tbody = document.getElementById('tablaGruposRepresentativos');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Música</option>
+        <option>Danza</option>
+        <option>Teatro</option>
+        <option>Arte</option>
+      </select>
+    </td>
+    <td><input type="number" min="0" required></td>
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Estudiantes</option>
+        <option>Docentes</option>
+        <option>Administrativos</option>
+      </select>
+    </td>
+    <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function agregarFilaEstimuloApoyo() {
+  const tbody = document.getElementById('tablaEstimulosApoyos');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>
+      <select required>
+        <option value="" disabled selected>Seleccione</option>
+        <option>Académico</option>
+        <option>Económico</option>
+      </select>
+    </td>
+    <td><input type="number" min="0" required></td>
+    <td><input type="text" required placeholder="Ej: 300000 o 10%"></td>
+    <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function agregarFilaEventoAcademico() {
+  const tbody = document.getElementById('tablaEventosAcademicos');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" required></td>
+    <td><input type="number" min="0" required></td>
+    <td><input type="number" min="0" step="0.1" required></td>
+    <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function agregarFilaResponsabilidadSocial() {
+  const tbody = document.getElementById('tablaResponsabilidadSocial');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" required></td>
+    <td><input type="number" min="0" required></td>
+    <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function eliminarFila(btn) {
+  btn.closest('tr').remove();
+}
+
+// --- Mostrar/ocultar tablas condicionales ---
+function toggleAsociacionCultural(sel) {
+  document.getElementById('detalleAsociacionCultural').style.display = (sel.value === 'Sí') ? '' : 'none';
+  if (sel.value === 'Sí' && document.getElementById('tablaAsociacionesCulturales').children.length === 0) {
+    agregarFilaAsociacionCultural();
+  }
+}
+function toggleEventosAcademicos(sel) {
+  document.getElementById('detalleEventosAcademicos').style.display = (sel.value === 'Sí') ? '' : 'none';
+  if (sel.value === 'Sí' && document.getElementById('tablaEventosAcademicos').children.length === 0) {
+    agregarFilaEventoAcademico();
+  }
+}
+function toggleResponsabilidadSocial(sel) {
+  document.getElementById('detalleResponsabilidadSocial').style.display = (sel.value === 'Sí') ? '' : 'none';
+  if (sel.value === 'Sí' && document.getElementById('tablaResponsabilidadSocial').children.length === 0) {
+    agregarFilaResponsabilidadSocial();
+  }
+}
+
+// --- Inicialización ---
+mostrarPreguntaCultura(0);
+updateProgressSecciones(1, 1); // Si tienes más secciones, actualiza el total
